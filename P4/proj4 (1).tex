@@ -1,0 +1,178 @@
+\documentclass{amsart}
+\usepackage{graphicx,amsmath,subcaption} % Required for inserting images
+\usepackage{biblatex}
+\addbibresource{proj4bib.bib}
+\title[Project 4: Population Model for a Single Species]{Math 481, Fall 2024\medskip \\
+  Project 4\\
+Population Model for a Single Species}
+\author{Gabriel Arteaga}
+\date{October 2024}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Introduction}
+Population dynamics is a key area of study for understanding the world around us. It has implications in biology, ecology, social sciences, and other fields that use population data to attain results. If we can understand and model how these populations emerge and collapse, we gain insight that will help us be a more sustainable species. In 1798, Thomas Malthus introduced one of the first models of population growth~\cite{malthus}. He proposed that populations grow exponentially assuming unrestricted growth. However, this quickly proved to not be the case in the real world. In $1839$, Pierre Fran\c{c}ois Verhulst expanded on Malthus's ideas suggesting that rather than exponential growth, populations were subject to logistic growth~\cite{verhulst}. A concept he created by constraining his model with environmental factors that more accurately reflected the dynamics observed in natural populations. In Section~\ref{sec:popmodel}, we will explore how Verhulst came to his model from Malthus's model. In Section~\ref{sec:Harvesting-Quota} we introduce a harvesting quota to Verhulst's model and analyze how that affects our model through qualitative analysis. To further analyze this model, we use Maple for numerical analysis and visualization. Finally, in Section~\ref{sec:Critical-Harvesting}, we obtain a general expression for the points at which our populations will collapse.  
+
+
+\section{Malthusian and Verhulst's Population Models}\label{sec:popmodel}
+We begin by examining the foundational Malthusian model. In 1798 Malthus came up with the differential equation~\cite{malthus},
+\begin{align*}
+\frac{dp(t)}{dt}=p(t)r.    
+\end{align*}
+Where $p(t)$ is the population at time $t$ and $r$ is the per capita growth rate. Malthus then re-wrote this equation to isolate the per capita growth rate,
+\begin{align*}
+    r=\frac{dp(t)/dt}{p(t)}.
+\end{align*}
+Luckily for Malthus this had a straightforward solution, assuming the initial condition $p(0)=p_0$ we obtain, 
+\begin{align*}
+    p(t)=e^{rt}p_0.
+\end{align*}
+However, examining the limit of this solution shows that the function diverges, implying that our population grows indefinitely. This is not possible, and it seemed like his model had failed. This model still caught the attention of Pierre Fran\c{c}ois Verhulst who in $1838$ published a population model based on Malthus's model, and the density-dependent crowding effect, denoted by $\beta$~\cite{verhulst}. This describes the decrease in the growth rate when factors like competition and crowding increase within a population. He introduced the term $\beta p(t)$ into the model to represent the slowing of the growth of the population as it reaches environmental limits. This led him to,
+\begin{align*}
+    \frac{dp(t)/dt}{p(t)}=r-\beta p(t).
+\end{align*}
+Verhulst re-wrote the differential equation as, 
+\begin{align}\label{eq:original-verhulst}
+    \frac{dp(t)}{dt}=rp(t)-\beta p(t)^2.
+\end{align}
+He then examined this differential equation at a population equilibrium,
+\begin{align*}
+    rp(t)-\beta p(t)^2=0.
+\end{align*}
+Solving for $p(t)$ we come to a ratio,
+\begin{align*}
+    p(t)=\frac{r}{\beta}.
+\end{align*}
+He called this ratio the carrying capacity of a population, denoted by $k$. The carrying capacity is the maximum population size that an environment can sustain before the growth rate must decrease. To use it in his differential equation, he re-wrote his ratio as,
+\begin{align*}
+\frac{1}{k}=\frac{\beta}{r}.
+\end{align*}
+He then re-wrote his differential equation~\eqref{eq:original-verhulst} as, 
+\begin{align*}
+    \frac{dp(t)}{dt}=\bigl(r-\beta p(t)\bigr)p(t)=\left(1-\frac{p(t)\beta}{r}\right)p(t)r.
+\end{align*}
+Then replace with our definition of carrying capacity,
+\begin{equation}\label{eq:Verhulst}
+    \frac{dp(t)}{dt}=\Biggl(1-p(t)\left(\frac{1}{k}\right)\Biggr)p(t)r.
+\end{equation}
+Verhulst called this differential equation the logistic curve. This equation has a quite elegant solution. If we use the change of variable, $q(t)=\frac{1}{p(t)}$ we get, 
+\begin{align*}
+    p(t)=\frac{1}{q(t)}, \quad\frac{dp(t)}{dt}=\frac{dq(t)}{dt}\left(-\frac{1}{q(t)^2}\right).
+\end{align*}
+Substituting this into our differential equation we obtain,
+\begin{align*}
+    r \frac{dq(t)}{dt}=-rq(t)\left(1-\frac{1}{kq(t)}\right).
+\end{align*}
+Expanding gives a linear differential equation,
+\begin{align*}
+    \frac{dq(t)}{dt}+rq(t)=\frac{r}{k}.
+\end{align*}
+Assuming an initial condition, $q(0)=q_0$, and multiplying an integrating factor of $\mu(t)=e^{rt}$ to both sides we obtain,
+\begin{align*}
+            e^{rt}\frac{dq(t)}{dt}+e^{rt}rq(t)=e^{rt}\left(\frac{r}{k}\right).
+\end{align*}
+This gives, 
+\begin{align*}
+    q(t)=\frac{\int e^{rt}\left(\frac{r}{k}\right)dt}{e^{rt}}.
+\end{align*}
+Solving the integral gives, 
+\begin{align*}
+    q(t)=\frac{1}{k}+ce^{-rt}.
+\end{align*}
+Reversing our substitution from earlier we can finally obtain our population $p(t)$,
+\begin{align*}
+    p(t)=\frac{1}{\frac{1}{k}+ce^{-rt}}.
+\end{align*}
+We assume the initial condition, $p(0)=p_0$, and solve for $c$,
+\begin{align*}
+    c=\frac{1}{p_0}-\frac{1}{k}.
+\end{align*}
+Substituting this back into our solution we obtain our final expression,
+\begin{align*}
+    p(t)=\frac{1}{\frac{1}{k}+e^{-rt}\left(\frac{1}{p_0}-\frac{1}{k}\right)}.
+\end{align*}
+\section{Harvesting Quota}\label{sec:Harvesting-Quota}
+Using Verhulst's logistic curve from equation~\eqref{eq:original-verhulst}, we explore the effects of a harvesting quota, representing a constant removal rate, $h$. Incorporating this into the logistic model gives,
+\begin{equation}\label{eq:harvest}
+    \frac{dp(t)}{dt}=rp(t)\left(1-\frac{p(t)}{k}\right)-h.
+\end{equation}
+This introduces a complication, as our differential equation is no longer easily solvable symbolically. As such we rely on qualitative analysis to understand our model. Let the right-hand side of our differential equation, equation~\eqref{eq:harvest} be,
+\begin{align}
+    f(p)=rp(t)\left(1-\frac{p(t)}{k}\right)-h.
+\end{align}
+The function $f(p)$ allows us to analyze $\frac{dp(t)}{dt}$ at each point based upon its polarity. The intersections of $f(p)$ imply that $\frac{dp(t)}{dt}=0$, indicating an equilibrium population level. When $f(p)$ increases at an intersection point, this corresponds to an unstable equilibrium and our solution curves will move away from this equilibrium. An unstable equilibrium is a population level where any change causes the population to move away from this point, either decreasing toward collapse or increasing toward the carrying capacity.". If $f(p)$ decreases at an intersection point, then this represents a stable equilibrium, and solution curves will tend toward this equilibrium. In this context, a stable equilibrium is our carrying capacity, anything below or above will settle to this level over time. As $f(p)$ is a downwards-facing parabola we expect two equilibrium, one stable at our first intersection, and one unstable at the second. Notice that this will create a band of stability, an interval where solution curves will tend towards a stable equilibrium. Another thing to note is that $h$ controls our band of stability, as $h$ decreases, the band of stability widens, and as $h$ increases, the band shrinks. Now that we know what our solutions will look like we use Maple to confirm by plotting $p(t)$ over different values of $h$. To graph this we assume that $r=2$ and our carrying capacity $k=8$, this is shown in figure~\ref{tab:graph}. As we have suspected through our qualitative analysis, as we increase $h$ and push the parabola further down our stability band shrinks until we set $h$ to four then five. When we set $h$ to four our band of stability becomes a line, as such we have a singular equilibrium. When we set $h$ to five, our parabola goes completely under the x-axis, in other terms our population disappears and our band of stability collapses.
+\begin{figure}
+    \centering
+    \begin{tabular}{|c|c|c|}%Could not figure out why but this refused to place any bars between the graphs or h values no matter what I tried. Left it boxed in as I felt it looked nicer than leaving it floating on the page.
+     \hline
+     \cr\raisebox{0.15\textwidth}{$h=0$}
+    \includegraphics[width=0.5\textwidth]{fp/fp0.png}   
+    \includegraphics[width=0.5\textwidth]{pop/pop0.png}\\
+    \hline
+\cr\raisebox{0.15\textwidth}{$h=1$}
+        \includegraphics[width=0.5\textwidth]{fp/fp1.png}   
+        \includegraphics[width=0.5\textwidth]{pop/pop1.png}\\
+    \hline
+\cr\raisebox{0.15\textwidth}{$h=2$}
+        \includegraphics[width=0.5\textwidth]{fp/fp2.png}   
+        \includegraphics[width=0.5\textwidth]{pop/pop2.png}\\
+    \hline
+    \end{tabular}
+    \end{figure}
+\begin{figure}[]
+\begin{tabular}{|c|c|c|}
+    \hline
+    \cr\raisebox{0.15\textwidth}{$h=3$}
+            \includegraphics[width=0.5\textwidth]{fp/fp3.png}   
+            \includegraphics[width=0.5\textwidth]{pop/pop3.png}\\
+        \hline
+    \cr\raisebox{0.15\textwidth}{$h=4$}
+            \includegraphics[width=0.5\textwidth]{fp/fp4.png}   
+            \includegraphics[width=0.5\textwidth]{pop/pop4.png}\\
+        \hline
+    \cr\raisebox{0.15\textwidth}{$h=5$}
+            \includegraphics[width=0.5\textwidth]{fp/fp5.png}   
+            \includegraphics[width=0.5\textwidth]{pop/pop5.png}\\
+    \hline
+    \end{tabular}
+    \caption{On the left we show the graphs of $f(p)$ for different values of $h$, and on the right are the corresponding solutions in blue with the equilibrium in red. Notice how our band of stability shrinks as our parabola is pushed downwards.}
+    \label{tab:graph}
+
+\end{figure}
+
+\section{Critical Harvesting Rate}\label{sec:Critical-Harvesting}
+Earlier in Section~\ref{sec:Harvesting-Quota} we noticed that when $h=4$ the band of stability became a line. That tells us that this point is the critical harvesting rate, $h_c$ for our chosen values of $r$ and $k$. This tells us the point at which the population can no longer sustain itself. Now we will derive a general expression for this critical value. We begin by examining $f(p)$ at an equilibrium point.
+\begin{align*}
+     0=rp(t)\left(1-\frac{p(t)}{k}\right)-h.
+\end{align*}
+Solving for $h$ and simplifying gives us, 
+\begin{align*}
+     h=rp(t)-\frac{p(t)^2r}{k}.
+\end{align*}
+Rearranging the terms gives us a quadratic in terms of $p(t)$, 
+\begin{align*}
+     -rp(t)+\frac{p(t)^2r}{k}+h=0.
+\end{align*}
+Setting the discriminant of the quadratic to zero gives a single solution for $f(p)=0$, indicating when our equilibrium becomes a line, 
+\begin{align*}
+     r^2-\frac{4rh_c}{k}=0.
+\end{align*}
+At this point, $h$ has become $h_c$ as we are solving for the critical harvesting rate. Solving for $h_c$ gives, 
+\begin{align}\label{eq:critical}
+     h_c=\frac{kr}{4}.
+\end{align}
+Now that we have an expression for the critical harvesting rate, we can determine, given the values of $k$ and $r$, what values of $h$ should be avoided to prevent population collapse. Suppose we use the same values from Section~\ref{sec:Harvesting-Quota}, $r=2$ and $k=8$. Substituting these values into equation~\eqref{eq:critical} gives
+\begin{align*}
+h_c=\frac{(2)(8)}{4}=4.
+\end{align*} 
+This aligns with what we saw previously in figure~\ref{tab:graph}, where decreasing $h$ causes the band of stability to shrink into a line, confirming that $h_c=4$ is indeed the critical harvesting rate at which the population can no longer sustain itself. 
+
+\section{Conclusion}
+In this paper, we have explored the foundational models of population dynamics, beginning with Malthus's exponential growth model and extending to Verhulst's logistic model, which introduced environmental constraints through carrying capacity. We then incorporated a harvesting quota into Verhulst's model, examining how changes in this harvesting rate impacted population stability. Through qualitative analysis and plotting through Maple, we observed the emergence and collapse of our band of stability, which narrows as $h$ approaches a critical value. We then derived an expression for this critical value, $h_c=\frac{kr}{4}$, we identified this as the point at which the model's band of stability reduced to a line. Signifying that our population was no longer sustainable at this harvesting rate and would eventually go extinct. 
+
+
+\printbibliography
+\end{document}
